@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+</head>
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		font-size: 14px;
+		color: #000;
+	}
+
+	body {
+		font-size: 12px;
+		background-color: #fff;
+		overflow-x: hidden;
+	}
+
+	.flex_box {
+		display: flex;
+		display: -webkit-flex;
+		width: 38%;
+		height: 50%;
+		align-items: center;
+		justify-content: space-around;
+		border: 2px solid #000000;
+		border-radius: 2px;
+		transition: all 0.5s;
+	}
+
+	.root_box {
+		margin: 0 auto;
+		width: 90%;
+		height: 400px;
+	}
+
+	.flex_box:hover {
+		transform: scale(1.1);
+	}
+
+	.btn {
+		width: 100px;
+		padding: 10px;
+		border: 1px solid #82d1a5;
+		border-radius: 5px;
+		margin-right: 10px;
+		background-color: #82d1a5;
+		color: white;
+	}
+
+	.tri-btn {
+		margin-top: 50px;
+		text-align: center;
+	}
+
+	.sec-btn {
+		margin-top: 30px;
+		text-align: center;
+	}
+</style>
+<body>
+<div class="content">
+	<div class="root_box flex_box">root
+		<div class="box2 flex_box">2
+			<div class="box3 flex_box">3
+				<div class="box4 flex_box">4</div>
+				<div class="box5 flex_box">5</div>
+			</div>
+			<div class="box6 flex_box">6
+				<div class="box7 flex_box">老李</div>
+				<div class="box8 flex_box">小罗</div>
+			</div>
+		</div>
+		<div class="box9 flex_box">9
+			<div class="box10 flex_box">10
+				<div class="box11 flex_box">狗霓</div>
+				<div class="box12 flex_box">12</div>
+				<div class="box13 flex_box">13</div>
+			</div>
+			<div class="box14 flex_box">14
+				<div class="box15 flex_box">15</div>
+				<div class="box16 flex_box">16</div>
+				<div class="box17 flex_box">17</div>
+				<div class="box18 flex_box">18</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="tri-btn">
+	<button type="button" class="btn-pre btn">前序</button>
+	<button type="button" class="btn-mid btn">中序</button>
+	<button type="button" class="btn-post btn">后序</button>
+	<label><input type="text" class="in-put"/></label>
+	<button type="button" class="btn-search btn">查询</button>
+</div>
+<div class="sec-btn">
+	<label><input type="text" id="add"/></label>
+	<button class="delete btn">删除</button>
+	<button class="add-btn btn">添加</button>
+</div>
+</body>
+<script type="text/javascript">
+	var treeNodes = [],
+		timer = null,
+		btn = document.getElementsByClassName("btn"),
+		preBtn = btn[0],
+		inBtn = btn[1],
+		lastBtn = btn[2],
+		searchBtn = btn[3],
+		delBtn = btn[4],
+		addBtn = btn[5],
+		addIn = document.getElementById("add"),
+		flexBox = document.getElementsByClassName("flex_box"),
+		treeRoot = document.getElementsByClassName("root_box")[0];
+
+	window.onload = function () {
+		preBtn.onclick = function () {
+			reset();
+			preOrder(treeRoot);
+			changColor();
+		};
+
+		inBtn.onclick = function () {
+			reset();
+			midOrder(treeRoot);
+			changColor();
+		};
+
+		lastBtn.onclick = function () {
+			reset();
+			postOrder(treeRoot);
+			changColor();
+		};
+		searchBtn.onclick = function () {
+			reset();
+			preOrder(treeRoot);
+			searchChange();
+		};
+
+		/*		inBtn.onclick = function () {
+		 reset();
+		 midOrder(treeRoot);
+		 changColor();
+		 };
+		 lastBtn.onclick = function () {
+		 reset();
+		 postOrder(treeRoot);
+		 changColor();
+		 }*/
+
+		//前序遍历
+		function preOrder(node) {
+			if (node) {
+				treeNodes.push(node);
+				preOrder(node.firstElementChild);
+				if (node.parentNode.nodeName.toLowerCase() !== 'body') {
+					preOrder(node.nextElementSibling);
+				}
+			}
+		}
+
+			//中序遍历
+		 function midOrder(node) {
+		 if (node) {
+		 midOrder(node.firstElementChild);
+		 treeNodes.push(node);
+		 midOrder(node.nextElementSibling);
+		 }
+		 }
+
+		 //后序遍历
+		 function postOrder(node) {
+		 if (node) {
+		 postOrder(node.firstElementChild);
+		 postOrder(node.nextElementSibling);
+		 treeNodes.push(node);
+		 }
+
+		 }
+
+
+		for (var i = 0; i<flexBox.length;i++) {
+			flexBox[i].style.backgroundColor = "fff";
+			flexBox[i].onclick = function (e) {
+				e.stopPropagation();
+				reset();
+				this.style.backgroundColor = "#abcdef";
+				this.id = "selected";
+			}
+		}
+
+
+		delBtn.onclick = function () {
+			if (treeRoot) {
+				preOrder(treeRoot);
+				for (var i = 0; i < flexBox.length; i++) {
+					if (flexBox[i].id === "selected") {
+						flexBox[i].parentNode.removeChild(flexBox[i]);
+					}
+				}
+			}
+		};
+
+		addBtn.onclick = function () {
+			var temp = [];
+			if (treeRoot) {
+				preOrder(treeRoot);
+				for (var i = 0; i < flexBox.length; i++) {
+					if (flexBox[i].id==="selected") {
+						temp.push(flexBox[i]);
+					}
+				}
+			}
+			for (i = 0; i < temp.length; i++) {
+				if (/\S/.test(addIn.value)) {
+					temp[i].appendChild(createNode(addIn.value));
+				}
+			}
+
+			function createNode(addValue) {
+				var newNode = document.createElement("div");
+				newNode.innerHTML = addValue;
+				newNode.className = "flex_box";
+				newNode.onclick = function (e) {
+					e.stopPropagation();
+					reset();
+					this.style.backgroundColor = "#abcdef";
+					this.id = "selected";
+				};
+				return newNode;
+			}
+		};
+
+		function changColor() {
+			var i = 0;
+			treeNodes[i].style.backgroundColor = "#F34949";
+			var timer = setInterval(function () {
+				i++;
+				if (i < treeNodes.length) {
+					treeNodes[i - 1].style.backgroundColor = "white";
+					treeNodes[i].style.backgroundColor = "#F34949";
+				}
+				else if (i = treeNodes.length) {
+					clearInterval(timer);
+					treeNodes[i - 1].style.backgroundColor = "white";
+				} else {
+					clearInterval(timer);
+					treeNodes[i].style.backgroundColor = "white";
+				}
+			}, 400)
+		}
+
+		function searchChange() {
+			var i = 0;
+			var txtValue = document.querySelector('input').value;
+			treeNodes[i].style.backgroundColor = '#F34949';
+			timer = setInterval(function () {
+				i++;
+				if (i < treeNodes.length) {
+					if (i >= 1 && !treeNodes[i - 1].onOff) {
+						treeNodes[i - 1].style.backgroundColor = "white";
+					}
+					treeNodes[i].style.backgroundColor = "#F34949";
+					find(treeNodes[i], txtValue);
+				} else {
+					clearInterval(timer);
+					treeNodes[treeNodes.length - 1].style.backgroundColor = (treeNodes[i - 1].onOff) ? 'blue' : "white";
+					for (i = 0; i < treeNodes.length; i++) {
+						if (treeNodes[i].onOff) {
+							return;
+						}
+					}
+				}
+
+			}, 100);
+
+			function find(node, txtValue) {
+				var text = getText(node);
+				if (text === txtValue) {
+					node.style.backgroundColor = "blue";
+					node.onOff = true;
+				}
+				function getText(node) {
+					var children = node.childNodes;
+					var text = '';
+					for (var i = 0; i < children.length; i++) {
+						if (children[i].nodeType === 3) {
+							text += children[i].nodeValue;
+						}
+					}
+					return text;
+				}
+			}
+		}
+
+		//初始化
+		function reset() {
+			treeNodes = [];
+			if (timer) clearInterval(timer);
+			var flexBox = document.getElementsByTagName("div");
+			for (var i = 0; i < flexBox.length; i++) {
+				flexBox[i].style.backgroundColor = "white";
+				flexBox[i].onOff = false;
+				flexBox[i].id = '';
+			}
+		}
+	}
+
+</script>
+</html>
