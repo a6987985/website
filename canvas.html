@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<!-- 引入element-ui样式 -->
+	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-default/index.css">
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<!-- 引入element-ui组件库 -->
+	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		#canvas {
+			border: 1.5px solid #8492A6;
+		}
+
+		.outer {
+			width: 800px;
+			margin: 10px auto;
+			text-align: center;
+		}
+
+		.bottom {
+			margin: 20px 0;
+		}
+
+		.bottom-container {
+			width: 800px;
+			height: 120px;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-around;
+		}
+
+		.block {
+			display: inline-block;
+
+		}
+
+		.btn {
+			height: 45px;
+			width: 85px;
+		}
+
+		.slider-c {
+			display: inline-block;
+			width: 500px;
+		}
+	</style>
+</head>
+<body>
+<div id="app">
+	<div class="outer">
+		<!-- canvas宽高放style标签中，出现取点错误，解决办法：宽高设定，放在canvas标签中 -->
+		<canvas id="canvas" height="500px" width="800px"></canvas>
+		<div class="bottom">
+			<div class="bottom-container">
+				<div class="block">
+					<span>画笔颜色</span>
+					<el-color-picker v-model="color1" @change="drawPen"></el-color-picker>
+				</div>
+				<div class="block">
+					<span>背景颜色</span>
+					<el-color-picker v-model="color2" @change="canvasBack"></el-color-picker>
+				</div>
+				<el-button type="success" class="btn" id="pen-eraser">{{pen}}</el-button>
+				<el-button type="danger" class="btn" @click="clear">清空画板</el-button>
+				<div class="slider-c">
+					<span class="demonstration">设置笔画及橡皮擦大小</span>
+					<el-slider v-model='value' :min=min :max=max :show-input=true :show-input-controls=false
+							   @change="changeSize"></el-slider>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	var app = new Vue({
+		el: '#app',
+		data: {
+			min: 1,
+			max: 40,
+			color1: '#66ccff',
+			color2: '#ffffff',
+			pen: '橡皮擦',
+			value: 5
+		},
+		methods: {
+			drawPen: function () {
+				var canvas = document.getElementById("canvas");
+				var ctx = canvas.getContext("2d");
+				ctx.strokeStyle = this.color1;
+			},
+			canvasBack: function () {
+				var canvas = document.getElementById("canvas");
+				var ctx = canvas.getContext("2d");
+				canvas.style.background = this.color2;
+			},
+			changeSize: function () {
+				var canvas = document.getElementById("canvas");
+				var ctx = canvas.getContext("2d");
+				ctx.lineWidth = this.value;
+			},
+			clear: function () {
+				var canvas = document.getElementById("canvas");
+				var ctx = canvas.getContext("2d");
+				ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
+			}
+		}
+	});
+	window.onload = function () {
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+		var penEraser = document.getElementById("pen-eraser");
+		var ifClean = true;
+		var canX,
+			canY,
+			canX_1,
+			canY_1;
+		//操作canvas
+		canvas.style.background = '#fff';
+		ctx.lineWidth = 3;
+		ctx.strokeStyle = '#66ccff';
+		canvas.onmousedown = function (event) {
+			var e = event || window.event;
+			canX = e.clientX - canvas.offsetLeft;
+			canY = e.clientY - canvas.offsetTop;
+			ctx.beginPath();
+			ctx.moveTo(canX, canY);
+			canvas.onmousemove = function (event) {
+				var e = event || window.event;
+				canX_1 = e.clientX - canvas.offsetLeft;
+				canY_1 = e.clientY - canvas.offsetTop;
+				ctx.lineTo(canX_1, canY_1);
+				ctx.stroke();
+			};
+			canvas.onmouseup = function () {
+				canvas.onmousemove = null;
+			};
+		};
+		//橡皮擦
+		penEraser.onclick = function () {
+			if (ifClean) {
+				ctx.save();
+				ctx.strokeStyle = "#ffffff";
+				app.pen = '画笔';
+				ifClean = false;
+			} else {
+				ctx.restore();
+				app.pen = '橡皮擦';
+				ifClean = true;
+			}
+		}
+	};
+
+</script>
+</body>
+</html>
