@@ -1,0 +1,81 @@
+.header h1{
+	padding: 10px 20px;
+	text-align: center;
+}
+.container {
+	width: 400px;
+	height: 250px;
+	margin: 100px auto;
+	perspective: 1500px;
+}
+.img-group {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	transform-style: preserve-3d;
+	transition: transform 1s;
+}
+.img {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+.img:nth-child(1) {
+	transform: rotateY(0) translateZ(285.275px);
+}
+.img:nth-child(2) {
+	transform: rotateY(72deg) translateZ(285.275px);
+}
+.img:nth-child(3) {
+	transform: rotateY(144deg) translateZ(285.275px);
+}
+.img:nth-child(4) {
+	transform: rotateY(216deg) translateZ(285.275px);
+}
+.img:nth-child(5) {
+	transform: rotateY(288deg) translateZ(285.275px);
+}
+.group-animation {
+	animation: Banner 5s infinite;
+	animation-play-state: paused;
+}
+.group-transform {
+	transition: transform 1s;
+	animation: none;
+}
+@keyframes Banner {
+	from {
+		transform: rotateY(0deg);
+	}
+	20% {
+		transform: rotateY(72deg);
+	}
+	40% {
+		transform: rotateY(144deg);
+	}
+	60% {
+		transform: rotateY(216deg);
+	}
+	80% {
+		transform: rotateY(288deg);
+	}
+	to {
+		transform: rotateY(360deg);
+	}
+}
+.btn-group {
+	margin-top: 100px;
+	text-align: center;
+}
+button {
+	padding: 6px 8px;
+	color: #fff;
+	background-color: #23bfe8;
+	border: 1px solid #23bfe8;
+	border-radius: 4px;
+	cursor: pointer;
+}
+button:hover {
+	color: #23bfe8;
+	background-color: #fff;
+}
