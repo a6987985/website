@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<style>
+		th:hover{
+			cursor: pointer;
+		}
+		td,th{
+			text-align: center;
+		}
+		th{
+			background-color: #b9b9b9;
+		}
+		table{
+			border: 1px solid #000000;
+
+		}
+	</style>
+</head>
+<body>
+<table border="1" cellspacing="0" cellpadding="8" align="center">
+	<tr>
+		<th onclick="sort(0)">学号</th><th onclick="sort(1)">姓名</th><th onclick="sort(2)">语文</th><th onclick="sort(3)">数学</th><th onclick="sort(4)">英语</th>
+	</tr>
+	<tr>
+		<td>1</td><td>小红</td><td>90</td><td>85</td><td>88</td>
+	</tr>
+	<tr>
+		<td>2</td><td>小明</td><td>81</td><td>92</td><td>75</td>
+	</tr>
+	<tr>
+		<td>3</td><td>小张</td><td>85</td><td>90</td><td>85</td>
+	</tr>
+	<tr>
+		<td>4</td><td>小王</td><td>79</td><td>88</td><td>90</td>
+	</tr>
+</table>
+<script>
+	var col = 0;
+	var reverse = false;
+	var table=document.getElementsByTagName("table")[0];
+	var trs=document.getElementsByTagName("tr");
+	var trsArr=new Array();
+	//加入数组
+	for(var i=1;i<trs.length;i++){
+		trsArr.push(trs[i]);
+	}
+	function sort(column) {
+		if(column == col)
+			reverse = !reverse;
+		col = column;
+		//删除tr
+		for(var i=trs.length-1;i>0;i--) {
+			trs[i].parentNode.removeChild(trs[i]);
+		}
+		//排序
+		trsArr.sort(function (a,b){
+			var stringA = a.children[col].innerHTML;
+			var stringB = b.children[col].innerHTML;
+			if(reverse)
+				return stringA.localeCompare(stringB);
+			else
+				return stringB.localeCompare(stringA);
+		});
+		//输出
+		for (var i=0; i <trsArr.length; i++) {
+			table.appendChild(trsArr[i]);
+		}
+	}
+</script>
+</body>
+</html>
